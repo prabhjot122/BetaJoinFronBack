@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     db_port: int = 3306
     db_name: str = "lawviksh_db"
     db_user: str = "root"
-    db_password: str = "Sahil@123"
+    db_password: str = "Sahilraj@123456//"
     
     # Security Configuration
     secret_key: str = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
