@@ -1,18 +1,18 @@
 # LawViksh API Deployment Guide
 
-This guide provides step-by-step instructions for deploying the LawViksh Backend API at `https://www.lawvriksh.com/api/` with proper CORS management for frontend-backend communication.
+This guide provides step-by-step instructions for deploying the LawViksh Backend API at `https://beta.lawvriksh.com/api/` with proper CORS management for frontend-backend communication.
 
 ## 🎯 Deployment Target
 
-- **API Base URL**: `https://www.lawvriksh.com/api/`
-- **Documentation**: `https://www.lawvriksh.com/docs`
-- **Health Check**: `https://www.lawvriksh.com/health`
-- **ReDoc**: `https://www.lawvriksh.com/redoc`
+- **API Base URL**: `https://beta.lawvriksh.com/api/`
+- **Documentation**: `https://beta.lawvriksh.com/docs`
+- **Health Check**: `https://beta.lawvriksh.com/health`
+- **ReDoc**: `https://beta.lawvriksh.com/redoc`
 
 ## 📋 Prerequisites
 
 - VPS/Server with Ubuntu 20.04+
-- Domain: `www.lawvriksh.com` pointing to your server
+- Domain: `beta.lawvriksh.com` pointing to your server
 - Docker and Docker Compose installed
 - SSL certificates for HTTPS
 
@@ -77,7 +77,7 @@ PORT=8000
 DEBUG=False
 
 # API Configuration
-API_BASE_URL=https://www.lawvriksh.com/api
+API_BASE_URL=https://beta.lawvriksh.com/api
 API_PREFIX=/api
 
 # CORS Configuration - Production
@@ -100,8 +100,8 @@ sudo certbot certonly --standalone -d lawvriksh.com -d www.lawvriksh.com
 
 # Create SSL directory and copy certificates
 mkdir -p ssl
-sudo cp /etc/letsencrypt/live/lawvriksh.com/fullchain.pem ssl/cert.pem
-sudo cp /etc/letsencrypt/live/lawvriksh.com/privkey.pem ssl/key.pem
+sudo cp /etc/letsencrypt/live/beta.lawvriksh.com/fullchain.pem ssl/cert.pem
+sudo cp /etc/letsencrypt/live/beta.lawvriksh.com/privkey.pem ssl/key.pem
 sudo chmod 644 ssl/cert.pem
 sudo chmod 600 ssl/key.pem
 ```
@@ -124,7 +124,7 @@ Your frontend should be configured to use the API base URL:
 
 ```javascript
 // Frontend configuration
-const API_BASE_URL = 'https://www.lawvriksh.com/api';
+const API_BASE_URL = 'https://beta.lawvriksh.com/api';
 
 // Example API calls
 const response = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -144,6 +144,7 @@ const response = await fetch(`${API_BASE_URL}/auth/login`, {
 
 The API is configured to accept requests from:
 
+- `https://beta.lawvriksh.com` (Beta domain - primary)
 - `https://www.lawvriksh.com` (Main domain)
 - `https://lawvriksh.com` (Domain without www)
 - `https://app.lawvriksh.com` (App subdomain)
@@ -152,7 +153,7 @@ The API is configured to accept requests from:
 For development, you can add localhost origins:
 
 ```env
-CORS_ORIGINS=["http://localhost:3000","http://localhost:3001","https://www.lawvriksh.com","https://lawvriksh.com"]
+CORS_ORIGINS=["http://localhost:3000","http://localhost:3001","https://beta.lawvriksh.com","https://www.lawvriksh.com","https://lawvriksh.com"]
 ```
 
 ## 🌐 API Endpoints
@@ -160,9 +161,9 @@ CORS_ORIGINS=["http://localhost:3000","http://localhost:3001","https://www.lawvr
 After deployment, your API will be available at:
 
 ### Authentication
-- `POST https://www.lawvriksh.com/api/auth/login`
-- `POST https://www.lawvriksh.com/api/auth/logout`
-- `POST https://www.lawvriksh.com/api/auth/refresh`
+- `POST https://beta.lawvriksh.com/api/auth/login`
+- `POST https://beta.lawvriksh.com/api/auth/logout`
+- `POST https://beta.lawvriksh.com/api/auth/refresh`
 
 ### User Management
 - `GET https://www.lawvriksh.com/api/users`
@@ -180,9 +181,9 @@ After deployment, your API will be available at:
 - `POST https://www.lawvriksh.com/api/data`
 
 ### Health & Documentation
-- `GET https://www.lawvriksh.com/health`
-- `GET https://www.lawvriksh.com/docs`
-- `GET https://www.lawvriksh.com/redoc`
+- `GET https://beta.lawvriksh.com/health`
+- `GET https://beta.lawvriksh.com/docs`
+- `GET https://beta.lawvriksh.com/redoc`
 
 ## 🔒 Security Features
 
@@ -210,7 +211,7 @@ After deployment, your API will be available at:
 
 ```bash
 # Check API health
-curl https://www.lawvriksh.com/health
+curl https://beta.lawvriksh.com/health
 
 # Expected response
 {

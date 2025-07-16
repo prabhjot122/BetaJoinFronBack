@@ -75,7 +75,7 @@ app.add_middleware(
 # Add trusted host middleware
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=["localhost", "127.0.0.1", "www.lawvriksh.com", "lawvriksh.com"]  # Configured hosts
+    allowed_hosts=["localhost", "127.0.0.1", "beta.lawvriksh.com", "www.lawvriksh.com", "lawvriksh.com"]  # Configured hosts
 )
 
 # Request logging middleware

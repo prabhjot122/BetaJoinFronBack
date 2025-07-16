@@ -19,9 +19,9 @@ warning() { echo -e "${YELLOW}[WARNING]${NC} $1"; }
 
 # Configuration
 if [ "$1" = "prod" ]; then
-    BASE_URL="https://www.lawvriksh.com"
-    API_URL="https://www.lawvriksh.com/api"
-    ORIGIN="https://www.lawvriksh.com"
+    BASE_URL="https://beta.lawvriksh.com"
+    API_URL="https://beta.lawvriksh.com/api"
+    ORIGIN="https://beta.lawvriksh.com"
 else
     BASE_URL="http://localhost:8000"
     API_URL="http://localhost:8000/api"

@@ -149,8 +149,10 @@ The application is configured to allow requests from the following origins:
 - `http://localhost:8080` (Vue.js default)
 
 ### Production Origins
+- `https://beta.lawvriksh.com`
 - `https://www.lawvriksh.com`
 - `https://lawvriksh.com`
+- `http://beta.lawvriksh.com`
 - `http://www.lawvriksh.com`
 - `http://lawvriksh.com`
 

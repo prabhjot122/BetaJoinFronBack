@@ -28,11 +28,13 @@ class DevSettings(BaseSettings):
     # CORS Configuration
     cors_origins: List[str] = [
         "http://localhost:3000",
-        "http://localhost:3001", 
+        "http://localhost:3001",
         "http://localhost:5173",
         "http://localhost:8080",
+        "https://beta.lawvriksh.com",
         "https://www.lawvriksh.com",
         "https://lawvriksh.com",
+        "http://beta.lawvriksh.com",
         "http://www.lawvriksh.com",
         "http://lawvriksh.com"
     ]

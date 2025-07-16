@@ -152,7 +152,7 @@ PORT=8000
 DEBUG=False
 
 # API Configuration
-API_BASE_URL=https://www.lawvriksh.com/api
+API_BASE_URL=https://beta.lawvriksh.com/api
 API_PREFIX=/api
 
 # CORS Configuration - Production

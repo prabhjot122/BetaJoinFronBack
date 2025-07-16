@@ -18,4 +18,4 @@ echo "4. Checking logs..."
 docker-compose -f docker-compose.prod.external-mysql-linux.yml logs --tail 20
 
 echo "=== Update & Redeploy Complete ==="
-echo "Check your API at: https://www.lawvriksh.com/api/" 
+echo "Check your API at: https://beta.lawvriksh.com/api/"

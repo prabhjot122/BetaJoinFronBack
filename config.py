@@ -25,14 +25,14 @@ class Settings(BaseSettings):
     debug: bool = True
     
     # API Configuration
-    api_base_url: str = "https://www.lawvriksh.com/api"
+    api_base_url: str = "https://beta.lawvriksh.com/api"
     api_prefix: str = "/api"
-    
+
     # CORS Configuration - Production ready
     cors_origins: List[str] = [
         # Development origins
         "http://localhost:3000",
-        "http://localhost:3001", 
+        "http://localhost:3001",
         "http://localhost:5173",
         "http://localhost:8080",
         "http://127.0.0.1:3000",
@@ -40,8 +40,10 @@ class Settings(BaseSettings):
         "http://127.0.0.1:5173",
         "http://127.0.0.1:8080",
         # Production origins
+        "https://beta.lawvriksh.com",
         "https://www.lawvriksh.com",
         "https://lawvriksh.com",
+        "http://beta.lawvriksh.com",
         "http://www.lawvriksh.com",
         "http://lawvriksh.com",
         # Frontend subdomains (if any)

@@ -36,11 +36,11 @@ host=0.0.0.0
 port=8000
 
 # API Configuration
-api_base_url=https://www.lawvriksh.com/api
+api_base_url=https://beta.lawvriksh.com/api
 api_prefix=/api
 
 # CORS Configuration
-cors_origins=["https://www.lawvriksh.com","https://lawvriksh.com","https://app.lawvriksh.com","https://admin.lawvriksh.com"]
+cors_origins=["https://beta.lawvriksh.com","https://www.lawvriksh.com","https://lawvriksh.com","https://app.lawvriksh.com","https://admin.lawvriksh.com"]
 cors_allow_credentials=true
 cors_allow_methods=["GET","POST","PUT","DELETE","OPTIONS","PATCH"]
 cors_allow_headers=["*"]
