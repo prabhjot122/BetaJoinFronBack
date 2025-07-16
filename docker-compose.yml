@@ -4,97 +4,146 @@ services:
   # MySQL Database
   mysql:
     image: mysql:8.0
-    container_name: lawviksh_mysql
+    container_name: lawvriksh-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: Sahil@123
-      MYSQL_DATABASE: lawviksh_db
-      MYSQL_USER: lawviksh_user
-      MYSQL_PASSWORD: lawviksh_pass
+      # Sets the root password. The app will connect with these credentials.
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-Sahil@123456//}
+      MYSQL_DATABASE: ${DB_NAME:-lawviksh_db}
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mysql_data_prod:/var/lib/mysql
       - ./lawdata.sql:/docker-entrypoint-initdb.d/lawdata.sql
-    ports:
-      - "3306:3306"
     networks:
-      - lawviksh_network
+      - lawviksh_network_prod
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 20s
-      retries: 10
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-Sahil@123456//}"]
+      timeout: 60s
+      retries: 20
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
 
   # FastAPI Application
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: lawviksh_app
+      target: production
+    container_name: lawviksh_app_prod
     restart: unless-stopped
     environment:
       - DB_HOST=mysql
       - DB_PORT=3306
-      - DB_NAME=lawviksh_db
+      - DB_NAME=${DB_NAME:-lawviksh_db}
+      # Connects as the root user, matching the mysql service config
       - DB_USER=root
-      - DB_PASSWORD=Sahil@123
-      - SECRET_KEY=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
-      - ALGORITHM=HS256
-      - ACCESS_TOKEN_EXPIRE_MINUTES=30
-      - ADMIN_USERNAME=admin
-      - ADMIN_PASSWORD=admin123
+      - DB_PASSWORD=${DB_ROOT_PASSWORD:-Sahil@123456//}
+      - SECRET_KEY=${SECRET_KEY:-09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7}
+      - ALGORITHM=${ALGORITHM:-HS256}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES:-30}
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
       - HOST=0.0.0.0
       - PORT=8000
       - DEBUG=False
-      - API_BASE_URL=https://www.lawvriksh.com/api
-      - API_PREFIX=/api
-      - CORS_ORIGINS=["http://localhost:3000","http://localhost:3001","http://localhost:5173","http://localhost:8080","http://127.0.0.1:3000","http://127.0.0.1:3001","http://127.0.0.1:5173","http://127.0.0.1:8080","https://www.lawvriksh.com","https://lawvriksh.com","http://www.lawvriksh.com","http://lawvriksh.com","https://app.lawvriksh.com","https://admin.lawvriksh.com"]
-      - CORS_ALLOW_CREDENTIALS=true
-      - CORS_ALLOW_METHODS=["GET","POST","PUT","DELETE","OPTIONS","PATCH"]
-      - CORS_ALLOW_HEADERS=["*"]
-      - CORS_EXPOSE_HEADERS=["Content-Length","Content-Type","Authorization"]
-      - CORS_MAX_AGE=86400
-    ports:
-      - "8000:8000"
+      - API_BASE_URL=${API_BASE_URL:-https://www.lawvriksh.com/api}
+      - API_PREFIX=${API_PREFIX:-/api}
+      - CORS_ORIGINS=${CORS_ORIGINS:-["https://www.lawvriksh.com","https://lawvriksh.com","https://app.lawvriksh.com","https://admin.lawvriksh.com"]}
+      - CORS_ALLOW_CREDENTIALS=${CORS_ALLOW_CREDENTIALS:-true}
+      - CORS_ALLOW_METHODS=${CORS_ALLOW_METHODS:-["GET","POST","PUT","DELETE","OPTIONS","PATCH"]}
+      - CORS_ALLOW_HEADERS=${CORS_ALLOW_HEADERS:-["*"]}
+      - CORS_EXPOSE_HEADERS=${CORS_EXPOSE_HEADERS:-["Content-Length","Content-Type","Authorization"]}
+      - CORS_MAX_AGE=${CORS_MAX_AGE:-86400}
     depends_on:
       mysql:
         condition: service_healthy
     networks:
-      - lawviksh_network
+      - lawviksh_network_prod
     volumes:
-      - app_logs:/app/logs
-      - app_uploads:/app/uploads
+      - app_logs_prod:/app/logs
+      - app_uploads_prod:/app/uploads
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
-      retries: 3
-      start_period: 40s
+      retries: 5
+      start_period: 120s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
 
-  # Nginx Reverse Proxy (Optional)
+  # Remix Frontend
+  remix:
+    build:
+      context: ./Frontend/Beta-Frontend2
+      dockerfile: Dockerfile
+    container_name: lawviksh_remix_prod
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - VITE_API_BASE_URL=https://lawvriksh.com/api
+    networks:
+      - lawviksh_network_prod
+    depends_on:
+      - app
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+
+  # Nginx Reverse Proxy
   nginx:
     image: nginx:alpine
-    container_name: lawviksh_nginx
+    container_name: lawviksh_nginx_prod
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx.prod.conf:/etc/nginx/nginx.conf:ro
       - ./ssl:/etc/nginx/ssl:ro
+      - nginx_logs:/var/log/nginx
     depends_on:
       - app
+      - remix
     networks:
-      - lawviksh_network
-    profiles:
-      - production
+      - lawviksh_network_prod
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.25'
+        reservations:
+          memory: 64M
+          cpus: '0.1'
 
 volumes:
-  mysql_data:
+  mysql_data_prod:
     driver: local
-  app_logs:
+  app_logs_prod:
     driver: local
-  app_uploads:
+  app_uploads_prod:
+    driver: local
+  nginx_logs:
     driver: local
 
 networks:
-  lawviksh_network:
-    driver: bridge 
+  lawviksh_network_prod:
+    driver: bridge

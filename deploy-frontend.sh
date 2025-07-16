@@ -2,11 +2,10 @@
 set -e
 
 # Variables (update these if your paths are different)
-FRONTEND_DIR=~/BETA-FRONTEND
-BACKEND_DIR=~/JoiningBetarepo
+FRONTEND_DIR=~/JoiningBetarepo/Frontend/Beta-Frontend2
 FRONTEND_BUILD_DIR=$FRONTEND_DIR/build/client
-BACKEND_FRONTEND_DIR=$BACKEND_DIR/frontend
-DOCKER_COMPOSE_FILE=$BACKEND_DIR/docker-compose.prod.external-mysql-linux.yml
+BACKEND_FRONTEND_DIR=~/JoiningBetarepo/Frontend/Beta-Frontend2
+DOCKER_COMPOSE_FILE=~/JoiningBetarepo/docker-compose.prod.external-mysql-linux.yml
 
 # 1. Build the frontend
 cd $FRONTEND_DIR
